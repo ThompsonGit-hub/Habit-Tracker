@@ -1,19 +1,25 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import './App.css'
+import { AppLayout } from './components/AppLayout'
+import { HabitsPage } from './pages/HabitsPage'
+import { HabitDetailsPage } from './pages/HabitDetailsPage'
+import { NewHabitPage } from './pages/NewHabitPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 
-const appTitle: string = 'Habit Tracker'
-
-export default function App() {
+export function App() {
   return (
-    <div className="app">
-      <header>
-        <h1>{appTitle}</h1>
-        <p>Ежедневные привычки, отметки выполнения и личный прогресс.</p>
-      </header>
-
-      <section>
-        <h2>Мои привычки</h2>
-        <p>Здесь появится список ваших привычек и отметки за день.</p>
-      </section>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Navigate to="/habits" replace />} />
+          <Route path="/habits" element={<HabitsPage />} />
+          <Route path="/habits/new" element={<NewHabitPage />} />
+          <Route path="/habits/:id" element={<HabitDetailsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
+
+export default App
