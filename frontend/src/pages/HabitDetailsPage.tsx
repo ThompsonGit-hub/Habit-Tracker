@@ -1,9 +1,17 @@
-import { Link, useParams } from 'react-router'
-import { habits } from '../data/habits'
+import { Link, useParams, useNavigate } from 'react-router'
+import type { Habit } from '../types/habit'
 
-export function HabitDetailsPage() {
+type HabitDetailsPageProps = {
+  habits: Habit[];
+  onDelete: (id: string) => void;
+}
+
+export function HabitDetailsPage({ habits, onDelete }: HabitDetailsPageProps) {
   const { id } = useParams()
+  const navigate = useNavigate()
+
   const habit = habits.find((item) => item.id === id)
+
 
   if (!habit) {
     return (
@@ -15,15 +23,22 @@ export function HabitDetailsPage() {
     )
   }
 
-  // Словарь
   const frequencyLabel = {
     daily: 'Ежедневно',
     weekly: 'Еженедельно',
     monthly: 'Ежемесячно'
   }[habit.frequency]
-//Перевожу в привычный формат дату создания привычки, чтобы отображать её в формате ДД.ММ.ГГГГ
+
   const formattedDate = new Date(habit.createdAt).toLocaleDateString('ru-RU')
-  
+
+  function handleDelete() {
+    if (!habit) return;
+    if (window.confirm(`Удалить привычку «${habit.title}»?`)) {
+      onDelete(habit.id)
+      navigate('/habits', { replace: true })
+    }
+  }
+
   return (
     <section>
       <h1>{habit.title}</h1>
@@ -34,8 +49,13 @@ export function HabitDetailsPage() {
       <p>Цель: {habit.targetDays} дней подряд</p>
       <p>Дата создания: {formattedDate}</p>
 
-      <br />
-      <Link to="/habits">Вернуться к списку привычек</Link>
+      <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+        <Link to="/habits">Вернуться к списку</Link>
+        <Link to={`/habits/${habit.id}/edit`}>Редактировать</Link>
+        <button type="button" onClick={handleDelete} style={{ color: 'red' }}>
+          Удалить
+        </button>
+      </div>
     </section>
   )
 }

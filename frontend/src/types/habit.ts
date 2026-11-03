@@ -12,3 +12,4 @@ export type Habit = {
   streak: number         
   createdAt: string      
 }
+export type HabitDraft = Omit<Habit, 'id'>
