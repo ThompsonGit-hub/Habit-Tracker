@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { HabitCard } from '../components/HabitCard'
+import { useTags } from '../hooks/useTags'
 import type { Habit } from '../types/habit'
 
 type HabitsPageProps = {
@@ -8,13 +9,27 @@ type HabitsPageProps = {
 }
 
 export function HabitsPage({ habits }: HabitsPageProps) {
-  const [frequencyFilter, setFrequencyFilter] = useState<string>('all')
+  const { load } = useTags()
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
+
+  const categories = Array.from(
+    new Set(habits.map((habit) => habit.category).filter(Boolean))
+  )
+
+  const getCategoryLabel = (categoryId: string): string => {
+    if (load.status === 'success') {
+      return load.data.find((tag) => tag.id === categoryId)?.name ?? categoryId
+    }
+    if (load.status === 'loading') {
+      return 'Загрузка…'
+    }
+    return categoryId
+  }
 
   const visibleHabits = habits.filter((habit) => {
-    if (frequencyFilter === 'all') return true
-    return habit.frequency === frequencyFilter
+    if (categoryFilter === 'all') return true
+    return habit.category === categoryFilter
   })
-
 
   if (habits.length === 0) {
     return (
@@ -26,33 +41,36 @@ export function HabitsPage({ habits }: HabitsPageProps) {
     )
   }
 
-  // Если записи есть
   return (
     <section>
       <h1>Мои привычки</h1>
       <Link to="/habits/new">Добавить привычку</Link>
 
       <div style={{ margin: '15px 0', display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <label htmlFor="frequency-filter">Фильтр:</label>
+        <label htmlFor="category-filter">Фильтр:</label>
         <select
-          id="frequency-filter"
-          value={frequencyFilter}
+          id="category-filter"
+          value={categoryFilter}
           onChange={(e) => {
             const value = e.target.value
-            if (value === 'all' || value === 'daily' || value === 'weekly' || value === 'monthly') {
-              setFrequencyFilter(value)
+            if (value === 'all' || categories.includes(value)) {
+              setCategoryFilter(value)
             }
           }}
         >
           <option value="all">Все</option>
-          <option value="daily">Ежедневно</option>
-          <option value="weekly">Еженедельно</option>
-          <option value="monthly">Ежемесячно</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {getCategoryLabel(category)}
+            </option>
+          ))}
         </select>
 
-        <button type="button" onClick={() => setFrequencyFilter('all')}>
+        <button type="button" onClick={() => setCategoryFilter('all')}>
           Сбросить фильтр
         </button>
+
+        {load.status === 'loading' && <span>Загрузка категорий…</span>}
       </div>
 
       {visibleHabits.length === 0 ? (
