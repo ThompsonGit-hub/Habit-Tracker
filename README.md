@@ -17,3 +17,7 @@ npm run dev
 ```bash
 npm run build
 npm run preview
+
+ЛР 4 — Загрузка справочника по HTTP
+
+Реализована загрузка справочника тегов из ${import.meta.env.BASE_URL}demo/tags.json через src/services/tags.ts (getTags, parseTags) и хук src/hooks/useTags.ts (useTags) с проверкой response.ok, рантайм-валидацией элементов и уникальности id, отменой запросов через AbortController при размонтировании или перезапуске, а также сохранением черновика формы при ошибках и повторных попытках.

@@ -35,6 +35,7 @@ export function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Navigate to="/habits" replace />} />
+        
         <Route path="/habits" element={<HabitsPage habits={habits} />} />
         <Route path="/habits/new" element={<NewHabitPage onCreate={createHabit} />} />
         <Route path="/habits/:id" element={<HabitDetailsPage habits={habits} onDelete={deleteHabit} />} />

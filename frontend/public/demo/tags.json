@@ -1,0 +1,7 @@
+[
+  { "id": "health", "name": "Здоровье" },
+  { "id": "sport", "name": "Спорт" },
+  { "id": "study", "name": "Учёба" },
+  { "id": "productivity", "name": "Продуктивность" },
+  { "id": "development", "name": "Развитие" }
+]

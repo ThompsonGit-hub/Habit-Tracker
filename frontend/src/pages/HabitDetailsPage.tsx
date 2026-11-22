@@ -1,5 +1,6 @@
 import { Link, useParams, useNavigate } from 'react-router'
 import type { Habit } from '../types/habit'
+import { useTags } from '../hooks/useTags'
 
 type HabitDetailsPageProps = {
   habits: Habit[];
@@ -9,9 +10,9 @@ type HabitDetailsPageProps = {
 export function HabitDetailsPage({ habits, onDelete }: HabitDetailsPageProps) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { load } = useTags()
 
   const habit = habits.find((item) => item.id === id)
-
 
   if (!habit) {
     return (
@@ -22,6 +23,14 @@ export function HabitDetailsPage({ habits, onDelete }: HabitDetailsPageProps) {
       </section>
     )
   }
+
+  // Переводим ID категории в красивое имя
+  const categoryName =
+  load.status === 'loading'
+    ? 'Загрузка…'
+    : load.status === 'success'
+      ? load.data.find((tag) => tag.id === habit.category)?.name ?? habit.category
+      : habit.category
 
   const frequencyLabel = {
     daily: 'Ежедневно',
@@ -43,7 +52,7 @@ export function HabitDetailsPage({ habits, onDelete }: HabitDetailsPageProps) {
     <section>
       <h1>{habit.title}</h1>
       <p>Описание: {habit.description}</p>
-      <p>Категория: {habit.category}</p>
+      <p>Категория: {categoryName}</p>
       <p>Регулярность: {frequencyLabel}</p>
       <p>Текущая серия: {habit.streak} дней</p>
       <p>Цель: {habit.targetDays} дней подряд</p>

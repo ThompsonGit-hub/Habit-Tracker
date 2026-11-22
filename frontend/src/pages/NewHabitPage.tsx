@@ -1,7 +1,6 @@
 import { useNavigate, Link } from 'react-router'
 import { HabitForm } from '../components/HabitForm'
-import type { HabitDraft, HabitCategory } from '../types/habit'
-
+import type { HabitDraft } from '../types/habit'
 type NewHabitPageProps = {
   onCreate: (draft: HabitDraft) => string;
 }
@@ -9,7 +8,7 @@ type NewHabitPageProps = {
 const emptyHabit: HabitDraft = {
   title: '',
   description: '',
-  category: 'Здоровье' as HabitCategory,
+  category: '',
   frequency: 'daily',
   targetDays: 7,
   streak: 0,
